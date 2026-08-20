@@ -205,7 +205,18 @@ class QuizGame:
             print()
 
     def add_quiz(self):
-            pass
+        """새 퀴즈를 입력받아 목록에 넣고 파일에 저장한다."""
+        print()
+        print('새로운 퀴즈를 추가합니다.')
+        question = self.ask_text('문제를 입력하세요: ')
+        choices = []
+        for number in range(1, 5):
+            choices.append(self.ask_text('선택지 %d: ' % number))
+        answer = self.ask_number('정답 번호 (1-4): ', 1, 4)
+
+        self.quizzes.append(Quiz(question, choices, answer))
+        if self.save():
+            print('퀴즈가 추가되었습니다! (현재 %d개)' % len(self.quizzes))
 
     def show_list(self):
             pass
