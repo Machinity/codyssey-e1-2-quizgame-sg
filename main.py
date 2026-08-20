@@ -14,7 +14,7 @@ import random
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state.json')
 
 # 힌트를 한 번 볼 때마다 최종 점수에서 깎는 점수
-HINT_PENALTY = 5
+HINT_PENALTY = 10
 
 
 class Storage:
@@ -29,7 +29,7 @@ class Storage:
             with open(self.path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
         except FileNotFoundError:
-            print('저장된 데이터가 없어 기본 퀴즈로 시작합니다.')
+            print('저장된 데이터가 없어 기본 퀴즈로 시작합니다.')    
             return None
         except (json.JSONDecodeError, UnicodeDecodeError):
             print('데이터 파일이 손상되어 기본 퀴즈로 복구합니다.')
@@ -338,7 +338,7 @@ class QuizGame:
                         % (quiz.answer, quiz.answer_text()))
             print()
 
-        score = int(correct * 100 / total) - hint_count * HINT_PENALTY
+        score = int(correct * 100) - hint_count * HINT_PENALTY
         if score < 0:
             score = 0       # 아무리 많이 깎여도 0점 아래로는 내려가지 않는다.
         print('========================================')
