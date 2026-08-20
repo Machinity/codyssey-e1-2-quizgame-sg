@@ -1,3 +1,55 @@
+"""나만의 퀴즈 게임 (터미널에서 동작하는 콘솔 프로그램)
+
+- Quiz     : 퀴즈 한 문제를 표현한다.
+- Storage  : state.json 파일을 읽고 쓴다.
+- QuizGame : 메뉴, 게임 진행, 입력 처리 등 게임 전체를 관리한다.
+"""
+
+import json
+import os
+import random
+
+# 데이터 파일은 프로젝트 루트(main.py와 같은 위치)의 state.json 을 사용한다.
+STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state.json')
+
+
+class Storage:
+    """state.json 파일 저장/불러오기를 담당하는 클래스"""
+
+    def __init__(self, path):
+        self.path = path
+
+    def load(self):
+        """파일을 읽어 딕셔너리를 돌려준다. 없거나 손상되면 None을 돌려준다."""
+        try:
+            with open(self.path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            print('저장된 데이터가 없어 기본 퀴즈로 시작합니다.')
+            return None
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            print('데이터 파일이 손상되어 기본 퀴즈로 복구합니다.')
+            return None
+        except OSError as error:
+            print('데이터 파일을 읽지 못했습니다. (%s)' % error)
+            return None
+
+        if not isinstance(data, dict) or not isinstance(data.get('quizzes'), list):
+            print('데이터 형식이 올바르지 않아 기본 퀴즈로 복구합니다.')
+            return None
+        return data
+
+    def save(self, data):
+        """딕셔너리를 UTF-8 JSON 파일로 저장한다."""
+        try:
+            with open(self.path, 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=2)
+            return True
+        except OSError as error:
+            print('저장에 실패했습니다. (%s)' % error)
+            return False
+
+
 class Quiz:
     """퀴즈 한 문제를 표현하는 클래스"""
 
@@ -35,6 +87,13 @@ class Quiz:
 class QuizGame:
     """게임 전체를 관리하는 클래스"""
 
+    def __init__(self, storage):
+            self.storage = storage
+            self.quizzes = []       # Quiz 객체 목록
+            self.best_score = 0     # 최고 점수 (100점 만점)
+            self.best_correct = 0   # 최고 점수를 받았을 때 맞힌 문제 수
+            self.best_total = 0     # 최고 점수를 받았을 때 푼 문제 수
+
     # ------------------------------------------------------------------
     # 기본 데이터 / 파일 입출력
     # ------------------------------------------------------------------
@@ -54,6 +113,27 @@ class QuizGame:
             Quiz('오류가 발생해도 프로그램을 계속 실행하려면 무엇을 쓰는가?',
                  ['for / else', 'try / except', 'def / return', 'with / as'], 2),
         ]
+
+    def build_quiz(self, item):
+            """저장된 딕셔너리 하나를 Quiz 객체로 바꾼다. 형식이 틀리면 None."""
+            if not isinstance(item, dict):
+                return None
+            question = item.get('question')
+            choices = item.get('choices')
+            answer = item.get('answer')
+            if not isinstance(question, str) or question.strip() == '':
+                return None
+            if not isinstance(choices, list) or len(choices) != 4:
+                return None
+            if not isinstance(answer, int) or answer < 1 or answer > 4:
+                return None
+            return Quiz(question, choices, answer)
+
+    def read_int(self, value):
+            """저장된 값이 정수가 아니면 0으로 처리한다."""
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                return 0
+            return value
 
     # ------------------------------------------------------------------
     # 입력 처리
@@ -100,7 +180,29 @@ class QuizGame:
             print('========================================')
 
     def play(self):
-        pass
+        """저장된 퀴즈를 무작위 순서로 출제하고 결과를 보여준다."""
+        if len(self.quizzes) == 0:
+            print('등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.')
+            return
+
+        order = self.shuffled_quizzes()
+        total = len(order)
+        correct = 0
+        print()
+        print('퀴즈를 시작합니다! (총 %d문제, 순서는 무작위입니다)' % total)
+        print()
+
+        for index in range(total):
+            quiz = order[index]
+            quiz.show(index + 1)
+            picked = self.ask_number('정답 입력 (1-4): ', 1, 4)
+            if quiz.is_correct(picked):
+                correct = correct + 1
+                print('정답입니다!')
+            else:
+                print('오답입니다. 정답은 %d번 (%s) 입니다.'
+                        % (quiz.answer, quiz.answer_text()))
+            print()
 
     def add_quiz(self):
             pass
