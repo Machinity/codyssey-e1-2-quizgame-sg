@@ -129,12 +129,50 @@ class QuizGame:
                 return None
             return Quiz(question, choices, answer)
 
+    def load(self):
+        """state.json에서 퀴즈와 최고 점수를 불러온다."""
+        data = self.storage.load()
+        if data is None:
+            self.quizzes = self.default_quizzes()
+            self.save()
+            return
+
+        quizzes = []
+        for item in data.get('quizzes', []):
+            quiz = self.build_quiz(item)
+            if quiz is not None:
+                quizzes.append(quiz)
+
+        if len(quizzes) == 0:
+            print('사용할 수 있는 퀴즈가 없어 기본 퀴즈로 복구합니다.')
+            quizzes = self.default_quizzes()
+
+        self.quizzes = quizzes
+        self.best_score = self.read_int(data.get('best_score'))
+        self.best_correct = self.read_int(data.get('best_correct'))
+        self.best_total = self.read_int(data.get('best_total'))
+        print('저장된 데이터를 불러왔습니다. (퀴즈 %d개, 최고점수 %d점)'
+              % (len(self.quizzes), self.best_score))
+
     def read_int(self, value):
             """저장된 값이 정수가 아니면 0으로 처리한다."""
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 return 0
             return value
 
+    def save(self):
+        """현재 퀴즈와 최고 점수를 state.json에 저장한다."""
+        quiz_list = []
+        for quiz in self.quizzes:
+            quiz_list.append(quiz.to_dict())
+        data = {
+            'quizzes': quiz_list,
+            'best_score': self.best_score,
+            'best_correct': self.best_correct,
+            'best_total': self.best_total,
+        }
+        return self.storage.save(data)
+    
     # ------------------------------------------------------------------
     # 입력 처리
     # ------------------------------------------------------------------
@@ -204,6 +242,19 @@ class QuizGame:
                         % (quiz.answer, quiz.answer_text()))
             print()
 
+        score = int(correct * 100 / total)
+        print('========================================')
+        print('결과: %d문제 중 %d문제 정답! (%d점)' % (total, correct, score))
+        if score > self.best_score:
+            self.best_score = score
+            self.best_correct = correct
+            self.best_total = total
+            print('새로운 최고 점수입니다!')
+        else:
+            print('현재 최고 점수는 %d점입니다.' % self.best_score)
+        print('========================================')
+        self.save() 
+
     def add_quiz(self):
         """새 퀴즈를 입력받아 목록에 넣고 파일에 저장한다."""
         print()
@@ -232,10 +283,13 @@ class QuizGame:
         print('----------------------------------------')
 
     def show_score(self):
-            pass
-
-    def save(self):
-            pass
+        """최고 점수를 보여준다."""
+        print()
+        if self.best_total == 0:
+            print('아직 퀴즈를 풀지 않았습니다. 먼저 퀴즈를 풀어 보세요.')
+            return
+        print('최고 점수: %d점 (%d문제 중 %d문제 정답)'
+              % (self.best_score, self.best_total, self.best_correct))
 
     def run(self):
         """프로그램의 전체 흐름을 담당한다."""
