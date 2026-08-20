@@ -1,1 +1,1 @@
-# codyssey-e1-3-mininpusimulator-sg
+# codyssey-e1-2-quizgame-sg
