@@ -54,21 +54,35 @@
       ],
       "answer": 2,
       "hint": "{ 이름: 값 } 형태로 저장하고, 그 이름으로 값을 찾습니다."
-    },
-    {
-      "question": "오류가 발생해도 프로그램을 계속 실행하려면 무엇을 쓰는가?",
-      "choices": [
-        "for / else",
-        "try / except",
-        "def / return",
-        "with / as"
-      ],
-      "answer": 2,
-      "hint": "오류를 잡아서(catch) 처리하는 문법입니다."
     }
   ],
-  "best_score": 0,
-  "best_correct": 0,
-  "best_total": 0,
-  "history": []
+  "best_score": 100,
+  "best_correct": 3,
+  "best_total": 3,
+  "history": [
+    {
+      "date": "2026-08-21 03:21:54",
+      "total": 3,
+      "correct": 1,
+      "score": 33
+    },
+    {
+      "date": "2026-08-21 03:22:31",
+      "total": 3,
+      "correct": 0,
+      "score": 0
+    },
+    {
+      "date": "2026-08-21 03:23:32",
+      "total": 3,
+      "correct": 3,
+      "score": 100
+    },
+    {
+      "date": "2026-08-21 03:25:41",
+      "total": 6,
+      "correct": 1,
+      "score": 16
+    }
+  ]
 }

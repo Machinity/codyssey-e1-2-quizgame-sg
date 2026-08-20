@@ -15,11 +15,9 @@
 
 **주제: 파이썬 기초 문법**
 
-이번 미션에서 처음 배운 내용(자료형, 조건문/반복문, 클래스, 파일 입출력, 예외 처리)을
+이번 미션에서 파이썬 기본 개념을
 그대로 문제로 만들었습니다.
 
-- 퀴즈를 만들려면 내가 그 개념을 정확히 알아야 하므로, 문제를 작성하는 과정 자체가 복습이 되었습니다.
-- 나중에 배운 내용을 잊었을 때, 게임을 한 판 돌리는 것만으로 빠르게 점검할 수 있습니다.
 - 정답이 명확해서 4지선다 형식으로 만들기에 적합한 주제였습니다.
 
 ## 3. 실행 방법
@@ -30,7 +28,7 @@ cd codyssey-e1-2-quizgame-sg
 python3 main.py
 ```
 
-이미 저장소를 내려받았다면 아래 명령만 실행하면 됩니다.
+이미 저장소를 내려받았다면 파일이 있는 경로에서 아래 명령만 실행하면 됩니다.
 
 ```bash
 python3 main.py
@@ -76,6 +74,7 @@ codyssey-e1-2-quizgame-sg/
 ├── main.py       # 프로그램 전체 코드 (Storage, Quiz, QuizGame 클래스)
 ├── state.json    # 퀴즈 목록, 최고 점수, 게임 기록을 저장하는 데이터 파일
 ├── .gitignore    # Git이 추적하지 않을 파일 목록
+├── screenshots   # Git clone, pull, oneline graph 실습 스크린샷 저장
 └── README.md     # 프로젝트 설명 문서
 ```
 
@@ -137,12 +136,3 @@ codyssey-e1-2-quizgame-sg/
   ]
 }
 ```
-
-## 7. 실행 화면
-
-| 화면 | 스크린샷 |
-| --- | --- |
-| 메뉴 | `docs/screenshots/menu.png` |
-| 퀴즈 풀기 | `docs/screenshots/play.png` |
-| 퀴즈 추가 | `docs/screenshots/add_quiz.png` |
-| 점수 확인 | `docs/screenshots/score.png` |

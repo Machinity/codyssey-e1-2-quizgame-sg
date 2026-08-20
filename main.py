@@ -464,7 +464,7 @@ class QuizGame:
                 self.show_history()
             elif choice == 7:
                 self.save()
-                print('게임을 종료합니다. 안녕히 가세요!')
+                print('게임을 종료합니다.')
                 return
 
 
