@@ -219,7 +219,17 @@ class QuizGame:
             print('퀴즈가 추가되었습니다! (현재 %d개)' % len(self.quizzes))
 
     def show_list(self):
-            pass
+        """등록된 퀴즈 목록을 보여준다."""
+        print()
+        if len(self.quizzes) == 0:
+            print('등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.')
+            return
+
+        print('등록된 퀴즈 목록 (총 %d개)' % len(self.quizzes))
+        print('----------------------------------------')
+        for index in range(len(self.quizzes)):
+            print('[%d] %s' % (index + 1, self.quizzes[index].question))
+        print('----------------------------------------')
 
     def show_score(self):
             pass
